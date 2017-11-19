@@ -6,6 +6,7 @@ import {TabNavigator} from 'react-navigation';
 // Screen components
 import CurrentTasksComponent from './components/CurrentTasksComponent.js';
 import SetEventComponent from './components/SetEventComponent.js';
+import EventsComponent from './components/EventsComponent.js';
 import CalendarComponent from './components/CalendarComponent.js';
 
 const ToDoApp = TabNavigator({
@@ -14,6 +15,9 @@ const ToDoApp = TabNavigator({
     },
     SetEvent: {
         screen: SetEventComponent
+    },
+    ViewEvents: {
+        screen: EventsComponent
     },
     Calendar: {
         screen: CalendarComponent
