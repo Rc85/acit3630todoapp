@@ -14,7 +14,7 @@ A simple task management app that keeps track of current tasks. It includes feat
 - [x] Adding events
   - [x] Should reflect in event list
 - [x] Deleting events
-  - [ ] Update the list in SetEventsComponent.js
+  - [ ] Update the list in `SetEventComponent.js`
 - [ ] Modifying events
   - [ ] Changes should reflect immediately
 - [ ] Calendar view
@@ -28,9 +28,11 @@ A simple task management app that keeps track of current tasks. It includes feat
 
 ## Current AsyncStorage Objects
 
-tasksList
-- An array that stores tasks in the form of [ 'task1', 'task2', ...]
-- An array that store events in the form of [ {eventName: '', date: '', time: '', repeat: '' }, ...]
+`tasksList`
+- An array that stores tasks in the form of `[ 'task1', 'task2', ...]`
+
+`events`
+- An array that store events in the form of `[ {eventName: <string>, date: <string>, time: <string>, repeat: <string> }, ...]`
 
 ## Project Members
 
