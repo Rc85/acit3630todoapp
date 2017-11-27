@@ -14,17 +14,18 @@ A simple task management app that keeps track of current tasks. It includes feat
 - [x] Adding events
   - [x] Should reflect in event list
 - [x] Deleting events
-  - [ ] Update the list in `SetEventComponent.js`
-- [ ] Modifying events
-  - [ ] Changes should reflect immediately
+  - [x] Update the list in `SetEventComponent.js`
 - [ ] Calendar view
 
-## Minor Tasks (Low Priority)
+## Minor Tasks
 
 - [ ] Add icons to headers
 - [ ] Use icons for navigation button instead of texts (text won't fit)
 - [ ] Add color badges with category name for tasks
-- [ ] Selecting date in calendar show events for that date only
+- [ ] Add category to events
+- [ ] \(Optional) Modifying events
+  - [ ] Changes should reflect immediately
+- [ ] \(Optional) Selecting date in calendar show events for that date only
 
 ## Current AsyncStorage Objects
 

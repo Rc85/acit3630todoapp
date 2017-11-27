@@ -4,7 +4,6 @@ import {StyleSheet} from 'react-native';
 module.exports = StyleSheet.create({
     container: {
         marginTop: 24,
-        flex: 1,
         flexDirection: 'column'
     },
     topBar: {
@@ -18,7 +17,6 @@ module.exports = StyleSheet.create({
         justifyContent: 'center'
     },
     main: {
-        flex: 8,
         flexDirection: 'column',
         padding: 20,
     },
@@ -64,7 +62,6 @@ module.exports = StyleSheet.create({
         padding: 10
     },
     label: {
-        marginRight: 20,
         fontWeight: 'bold'
     },
     picker: {

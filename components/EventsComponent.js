@@ -20,41 +20,75 @@ export default class EventsComponent extends Component {
     static navigationOptions = {
         title: title
     }
+
+    async deleteEvent(index) {
+        await events.splice(index, 1); // delete item from the index of array
+        let eventList = await JSON.stringify(events); // convert array to string
+        await AsyncStorage.setItem('events', eventList); // save to local storage
+
+        this.setState({
+            dataSource: events // set state to new event list
+        });
+    }
+
+    async deleteAll() {
+        await AsyncStorage.removeItem('events'); // remove the 'events' string entirely
+        events.length = 0; // remove all items in events array
+        this.setState({
+            dataSource: events // set state to events array
+        });
+    }
     
     async getEvents() {
-        let response = await AsyncStorage.getItem('events');
-        events = await JSON.parse(response) || [];
+        let response = await AsyncStorage.getItem('events'); // get events from local storage
+        events = await JSON.parse(response) || []; // parse to JSON object or return empty array
 
         this.setState({
             dataSource: events
         });
     }
 
-    async deleteAll() {
-        await AsyncStorage.removeItem('events');
-    }
-
     componentDidMount() {
         this.getEvents();
     }
+    
+    componentWillReceiveProps(nextProps) { // when this component receive new props from SetEventComponent.js
+        let {params} = nextProps.navigation.state; // the {} allows us to access other objects inside nextProps.navigation.sate
+        
+        this.setState({
+            dataSource: params.event
+        });
+    }
 
     render() {
-        let event = this.state.dataSource.map((obj, i) => {
-            return <View key={i} style={styles.card}>
+        let event = this.state.dataSource.map((obj, i) => { // loop through the dataSource array
+            return <View key={i} style={styles.card}> {/* create an event object */}
                 <View style={styles.cardHeader}>
                     <Text style={styles.eventHeader}>{obj.eventName}</Text>
                     <TouchableHighlight
-                    style={styles.button}>
+                    style={styles.button}
+                    onPress={() => {
+                        this.deleteEvent(i); // delete an event
+                    }}>
                         <Icon name='trash' color='#fff' />
                     </TouchableHighlight>
                 </View>
 
                 <View style={styles.cardBody}>
-                    <Text style={styles.label}>Date and Time: </Text>
-                    <Text>{obj.date} At {obj.time}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.label}>Date: </Text>
+                        <Text>{obj.date}</Text>
+                    </View>
 
-                    <Text style={styles.label}>Repeat: </Text>
-                    <Text>{obj.repeat}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.label}>Time: </Text>
+                        <Text>{obj.time}</Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.label}>Repeat: </Text>
+                        <Text>{obj.repeat}</Text>
+                    </View>
                 </View>
             </View>;
         });
@@ -70,14 +104,13 @@ export default class EventsComponent extends Component {
                         <TouchableHighlight
                         style={styles.button}
                         onPress={() => {
-                            this.deleteAll();
-                            this.getEvents();
-                            let setEventActions = NavigationActions.setParams({
+                            this.deleteAll(); // delete all events
+                            let setEventActions = NavigationActions.setParams({ // create an action to send to SetEventComponent to updat the event list, so that when user goes an create another event, it's appended to the new list
                                 params: {event: events},
                                 key: 'SetEvent'
                             });
 
-                            this.props.navigation.dispatch(setEventActions);
+                            this.props.navigation.dispatch(setEventActions); // dispatch the action, this will trigger componentWillReceiveProps in SetEventComponent
                         }}>
                             <Text style={styles.textWhite}>Delete All</Text>
                         </TouchableHighlight>
