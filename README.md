@@ -9,18 +9,18 @@ A simple task management app that keeps track of current tasks. It includes feat
 - [x] Saving tasks to local storage
 - [x] Setting events
 - [x] Saving events to local storage
-- [ ] Push notification for event reminder
-- [ ] Recurring reminder for events
+- [x] Push notification for event reminder
+- [x] Recurring reminder for events
 - [x] Adding events
   - [x] Should reflect in event list
 - [x] Deleting events
   - [x] Update the list in `SetEventComponent.js`
-- [ ] Calendar view
+- [x] Calendar view
 
 ## Minor Tasks
 
 - [ ] Add icons to headers
-- [ ] Use icons for navigation button instead of texts (text won't fit)
+- [ ] ~~Use icons for navigation button instead of texts (text won't fit)~~
 - [ ] Add color badges with category name for tasks
 - [ ] Add category to events
 - [ ] \(Optional) Modifying events

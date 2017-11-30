@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 
 module.exports = StyleSheet.create({
     container: {
@@ -19,6 +19,7 @@ module.exports = StyleSheet.create({
     main: {
         flexDirection: 'column',
         padding: 20,
+        height: 400
     },
     addTask: {
         height: 50,
@@ -54,7 +55,7 @@ module.exports = StyleSheet.create({
     },
     checkboxLabel: {
         marginLeft: 5,
-        minWidth: 50
+        minWidth: 5
     },
     button: {
         backgroundColor: 'deepskyblue',

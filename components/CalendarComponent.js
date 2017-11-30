@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, StyleSheet} from 'react-native';
 import TopBarComponent from './TopBarComponent.js';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const styles = require('../assets/ToDoApp/styles.js');
 const title = 'Calendar';
 
-export default class CurrentTaskComponent extends Component {
+export default class CalendarComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,7 +28,8 @@ export default class CurrentTaskComponent extends Component {
                 </View>
 
                 <View style={styles.main}>
-                    <Text>Calendar</Text>
+                    <Calendar
+                    current={new Date()} />
                 </View>
             </View>
         )

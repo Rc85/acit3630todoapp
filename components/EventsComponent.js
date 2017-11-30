@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {View, Text, StyleSheet, AsyncStorage, ListView, TouchableHighlight, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, AsyncStorage, ListView, TouchableHighlight, ScrollView, Alert} from 'react-native';
 import {NavigationActions} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TopBarComponent from './TopBarComponent.js';
@@ -53,7 +53,7 @@ export default class EventsComponent extends Component {
     }
     
     componentWillReceiveProps(nextProps) { // when this component receive new props from SetEventComponent.js
-        let {params} = nextProps.navigation.state; // the {} allows us to access other objects inside nextProps.navigation.sate
+        let {params} = nextProps.navigation.state; // the {} allows us to access other objects inside nextProps.navigation.state
         
         this.setState({
             dataSource: params.event
@@ -62,13 +62,30 @@ export default class EventsComponent extends Component {
 
     render() {
         let event = this.state.dataSource.map((obj, i) => { // loop through the dataSource array
-            return <View key={i} style={styles.card}> {/* create an event object */}
+            return <View key={i} style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.eventHeader}>{obj.eventName}</Text>
                     <TouchableHighlight
                     style={styles.button}
                     onPress={() => {
-                        this.deleteEvent(i); // delete an event
+                        Alert.alert(
+                            'Confirmation',
+                            'Are you sure you want to delete this event',
+                            [
+                                {text: 'No', onPress: () => console.log('Cancelled')},
+                                {text: 'Yes', onPress: () => {
+                                    this.deleteEvent(i); // delete an event
+                                    alert('Event deleted');
+
+                                    let setEventActions = NavigationActions.setParams({
+                                        params: {event: events},
+                                        key: 'SetEvent'
+                                    });
+
+                                    this.props.navigation.dispatch(setEventActions);
+                                }}
+                            ]
+                        )
                     }}>
                         <Icon name='trash' color='#fff' />
                     </TouchableHighlight>
@@ -76,18 +93,18 @@ export default class EventsComponent extends Component {
 
                 <View style={styles.cardBody}>
                     <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.label}>Date: </Text>
-                        <Text>{obj.date}</Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.label}>Time: </Text>
-                        <Text>{obj.time}</Text>
+                        <Text style={styles.label}>Date and Time: </Text>
+                        <Text>{obj.datetime}</Text>
                     </View>
 
                     <View style={{flexDirection: 'row'}}>
                         <Text style={styles.label}>Repeat: </Text>
                         <Text>{obj.repeat}</Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.label}>Notes: </Text>
+                        <Text>{obj.notes}</Text>
                     </View>
                 </View>
             </View>;
@@ -104,13 +121,23 @@ export default class EventsComponent extends Component {
                         <TouchableHighlight
                         style={styles.button}
                         onPress={() => {
-                            this.deleteAll(); // delete all events
-                            let setEventActions = NavigationActions.setParams({ // create an action to send to SetEventComponent to updat the event list, so that when user goes an create another event, it's appended to the new list
-                                params: {event: events},
-                                key: 'SetEvent'
-                            });
+                            Alert.alert(
+                                'Confirmation',
+                                'Are you sure you want to delete all events?',
+                                [
+                                    {text: 'No', onPress: () => console.log('Cancelled')},
+                                    {text: 'Yes', onPress: () => {
+                                        this.deleteAll(); // delete all events
+                                        alert('All events deleted');
+                                        let setEventActions = NavigationActions.setParams({ // create an action to send to SetEventComponent to updat the event list, so that when user goes an create another event, it's appended to the new list
+                                            params: {event: events},
+                                            key: 'SetEvent'
+                                        });
 
-                            this.props.navigation.dispatch(setEventActions); // dispatch the action, this will trigger componentWillReceiveProps in SetEventComponent
+                                        this.props.navigation.dispatch(setEventActions); // dispatch the action, this will trigger componentWillReceiveProps in SetEventComponent
+                                    }}
+                                ]
+                            )
                         }}>
                             <Text style={styles.textWhite}>Delete All</Text>
                         </TouchableHighlight>

@@ -8,6 +8,8 @@ import SetEventComponent from './components/SetEventComponent.js';
 import EventsComponent from './components/EventsComponent.js';
 import CalendarComponent from './components/CalendarComponent.js';
 
+console.disableYellowBox = true;
+
 // load styles.js
 const styles = require('./assets/ToDoApp/styles.js');
 

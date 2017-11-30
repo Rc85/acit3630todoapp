@@ -6,29 +6,22 @@ import {NavigationActions} from 'react-navigation';
 import DatePicker from 'react-native-datepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TopBarComponent from './TopBarComponent.js';
+import {Notifications} from 'expo';
 
 const styles = require('../assets/ToDoApp/styles.js');
 const title = 'Set Event';
 const events = [];
 
-export default class CurrentTaskComponent extends Component {
+export default class SetEventComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { // the entire state is the event object
-            eventName: this.props.eventName,
-            date: this.props.date,
-            time: this.props.time,
-            repeat: this.props.repeat,
-            notes: this.props.notes
+            eventName: null,
+            datetime: this.convertDateTimeToString(new Date(new Date().getFullYear(), new Date().getUTCMonth(), (new Date().getDate() + 1), (new Date().getHours() - 8), new Date().getUTCMinutes())),
+            //time: this.props.time,
+            repeat: 'none',
+            notes: null
         }
-    }
-
-    static defaultProps = { // default props of the event object
-        eventName: '',
-        date: '01/01/2000',
-        time: '12:00:00',
-        repeat: 'none',
-        notes: ''
     }
 
     static navigationOptions = {
@@ -39,6 +32,8 @@ export default class CurrentTaskComponent extends Component {
         events.push(this.state); // push the event object to the events array
         let eventList = JSON.stringify(events); // convert to string
         await AsyncStorage.setItem('events', eventList); // save to local storage
+
+        this.loadEvents();
     }
 
     async loadEvents() {
@@ -46,16 +41,25 @@ export default class CurrentTaskComponent extends Component {
         events = await JSON.parse(response) || []; // conver to JSON object
     }
 
+    convertDateTimeToString(dt) {
+        let string = dt.toLocaleDateString() + ' ' + dt.getHours() + ':' + dt.getMinutes();
+        return string;
+    }
+
     componentDidMount() {
         this.loadEvents(); // load event list when starting the app
     }
 
     componentWillReceiveProps(nextProps) { // refer to the same function in EventsComponent
+        console.log(nextProps);
         let {params} = nextProps.navigation.state;
-        events = params.events;
+        events = params.event;
+        console.log(events);
     }
 
     render() {
+        Notifications.cancelAllScheduledNotificationsAsync();
+
         let {navigate} = this.props.navigation;
 
         return(
@@ -75,61 +79,31 @@ export default class CurrentTaskComponent extends Component {
                         <Text style={styles.label}>Event Name:</Text>
                         <TextInput
                         ref={input => {this.EventNameInput = input}} // references this TextInput by calling this.EventNameInput
-                        value={this.state.eventName}
                         underlineColorAndroid='transparent'
                         style={styles.textInputFull}
                         maxLength={30}
-                        onChangeText={(value) => {this.setState({
+                        onChangeText={(value) => this.setState({
                             eventName: value
-                        })}}/>
+                        })} />
                     </View>
 
                     <View style={styles.mb5}>
                         <Text style={styles.label}>Date:</Text>
                         <DatePicker
                         ref={input => {this.datePicker = input}}
-                        date={this.state.date}
                         showIcon={false}
-                        mode='date'
-                        placeholder='Select Date'
-                        format='YYYY-MM-DD'
+                        date={this.state.datetime}
+                        mode='datetime'
+                        format='M/DD/YYYY H:mm'
+                        placeholder='Select Date and Time'
                         minDate={new Date()}
-                        maxDate={new Date('2027-01-01')}
+                        //{new Date(new Date().getFullYear(), new Date().getUTCMonth(), (new Date().getDate() + 1), (new Date().getHours() - 8), new Date().getUTCMinutes())}
+                        maxDate={new Date((new Date().getFullYear() + 10), new Date().getUTCMonth(), (new Date().getDate()), (new Date().getHours() - 8), new Date().getUTCMinutes())}
                         confirmBtnText='Confirm'
                         cancelBtnText='Cancel'
-                        onDateChange={(date) => {this.setState({date: date})}} />
-                    </View>
-
-                    <View style={styles.mb5}>
-                        <Text style={styles.label}>Time:</Text>
-                        <DatePicker
-                        ref={input => {this.timePicker = input}}
-                        date={this.state.time}
-                        showIcon={false}
-                        mode='time'
-                        placeholder='Select Time'
-                        format='h:mm A'
-                        confirmBtnText='Confirm'
-                        cancelBtnText='Cancel'
-                        onDateChange={(time) => {this.setState({time: time})}} />
-                    </View>
-
-                    <View style={styles.mb5}>
-                        <Text style={styles.label}>Repeat:</Text>
-                        <View style={styles.picker}>
-                            <Picker
-                            ref={input => {this.repeatPicker = input}}
-                            onValueChange={(value) => this.setState({
-                                repeat: value
-                            })}
-                            selectedValue={this.state.repeat}>
-                                <Picker.Item label='None' value='None'/>
-                                <Picker.Item label='Daily' value='Daily'/>
-                                <Picker.Item label='Weekly' value='Weekly'/>
-                                <Picker.Item label='Monthly' value='Monthly'/>
-                                <Picker.Item label='Yearly' value='Yearly'/>
-                            </Picker>
-                        </View>
+                        onDateChange={(value) => this.setState({
+                            datetime: value 
+                        })} />
                     </View>
 
                     <View style={styles.mb5}>
@@ -141,31 +115,78 @@ export default class CurrentTaskComponent extends Component {
                         multiline={true}
                         autoGrow={true}
                         maxHeight={200}
-                        value={this.state.notes}
                         onChangeText={(value) => this.setState({
                             notes: value
-                        })}/>
+                        })} />
+                    </View>
+
+                    <View style={styles.mb5}>
+                        <Text style={styles.label}>Repeat:</Text>
+                        <View style={styles.picker}>
+                            <Picker
+                            ref={input => {this.repeatPicker = input}}
+                            selectedValue={this.state.repeat}
+                            onValueChange={(value) => this.setState({
+                                repeat: value
+                            })}>
+                                <Picker.Item label='None' value='none'/>
+                                <Picker.Item label='Minute' value='minute'/>
+                                <Picker.Item label='Daily' value='day'/>
+                                <Picker.Item label='Weekly' value='week'/>
+                                <Picker.Item label='Monthly' value='month'/>
+                                <Picker.Item label='Yearly' value='year'/>
+                            </Picker>
+                        </View>
                     </View>
 
                     <View style={styles.buttonContainer}>
                         <TouchableHighlight
                         style={styles.button}
                         onPress={() => {
-                            this.saveEvent(); // save to local storage
-                            alert('Event saved successfully');
-                            this.setState({ // sets the state
-                                eventName: this.props.eventName,
-                                date: this.props.date,
-                                time: this.props.time,
-                                repeat: this.props.repeat
-                            });
+                            if (this.state.eventName !== null) {
+                                this.saveEvent(); // save to local storage
+                                this.EventNameInput.clear();
+                                this.notesInput.clear();
 
-                            let eventsAction = NavigationActions.setParams({ // creates an action to dispatch
-                                params: {event: events},
-                                key: 'ViewEvents'
-                            });
+                                let date = new Date(this.state.datetime);
+                                let scheduleDate = new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate(), (date.getHours() - 8), date.getMinutes());
+                                let notificationOptions = {
+                                    title: this.state.eventName,
+                                    sound: true
+                                };
 
-                            this.props.navigation.dispatch(eventsAction); // dispatch action to EventsComponent
+                                if (this.state.repeat === 'none') {
+                                    var scheduleOptions = {
+                                        time: scheduleDate
+                                    }
+                                } else {
+                                    var scheduleOptions = {
+                                        time: scheduleDate,
+                                        repeat: this.state.repeat
+                                    }
+                                }
+
+                                Notifications.scheduleLocalNotificationAsync(notificationOptions, scheduleOptions);
+                                console.log(Notifications._setInitialNotification);
+
+                                alert('Event saved successfully');
+                                this.setState({ // sets the state back to default
+                                    eventName: this.state.eventName,
+                                    datetime: this.state.datetime,
+                                    repeat: this.state.repeat,
+                                    notes: this.state.notes
+                                });
+                                console.log(this.state.datetime);
+
+                                let eventsAction = NavigationActions.setParams({ // creates an action to dispatch
+                                    params: {event: events},
+                                    key: 'ViewEvents'
+                                });
+
+                                this.props.navigation.dispatch(eventsAction); // dispatch action to EventsComponent
+                            } else {
+                                alert('Please enter an event name');
+                            }
                         }}>
                             <Text style={styles.textWhite}>Save</Text>
                         </TouchableHighlight>
