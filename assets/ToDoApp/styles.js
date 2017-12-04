@@ -17,7 +17,8 @@ module.exports = StyleSheet.create({
     topBarChild: {
         height: 50,
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     main: {
         flexDirection: 'column',

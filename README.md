@@ -19,13 +19,13 @@ A simple task management app that keeps track of current tasks. It includes feat
 
 ## Minor Tasks
 
-- [ ] Add icons to headers
+- [x] Add icons to headers and buttons
 - [ ] ~~Use icons for navigation button instead of texts (text won't fit)~~
 - [ ] Add color badges with category name for tasks
 - [ ] Add category to events
 - [ ] \(Optional) Modifying events
   - [ ] Changes should reflect immediately
-- [ ] \(Optional) Selecting date in calendar show events for that date only
+- [x] \(Optional) Selecting date in calendar show events for that date only
 
 ## Current AsyncStorage Objects
 
