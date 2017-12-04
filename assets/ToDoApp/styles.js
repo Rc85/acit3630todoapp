@@ -1,15 +1,18 @@
 import React from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 
+const windowHeight = Dimensions.get('window').height;
+
 module.exports = StyleSheet.create({
     container: {
         marginTop: 24,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: '#FAFAFA'
     },
     topBar: {
         minHeight: 50,
         flexDirection: 'column',
-        backgroundColor: 'deepskyblue'
+        backgroundColor: '#2c3e50'
     },
     topBarChild: {
         height: 50,
@@ -18,8 +21,13 @@ module.exports = StyleSheet.create({
     },
     main: {
         flexDirection: 'column',
-        padding: 20,
-        height: 400
+        padding: 15,
+        height: windowHeight - 175,
+    },
+    eventsMain: {
+        flexDirection: 'column',
+        padding: 15,
+        height: windowHeight - 125,
     },
     addTask: {
         height: 50,
@@ -27,25 +35,35 @@ module.exports = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: '#fff',
+        backgroundColor: '#FBFCFC',
         borderTopWidth: 1,
-        borderTopColor: 'black',
-        borderBottomWidth: 1,
-        borderBottomColor: 'black'
+        borderTopColor:  '#34495e',
+        borderBottomWidth: 2,
+        borderBottomColor: '#34495e',
     },
     textInput: {
         width: 200,
         height: 40,
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: '#bdc3c7',
+        backgroundColor: '#ecf0f1',
         borderRadius: 3,
-        padding: 5
+        padding: 5,
     },
     textInputFull: {
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: '#34495e',
         borderRadius: 3,
         padding: 5
+
+    },
+    agendaItem: {
+        backgroundColor: 'white',
+        flex: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginRight: 10,
+        marginTop: 17
     },
     checkbox: {
         flex: 1,
@@ -58,7 +76,7 @@ module.exports = StyleSheet.create({
         minWidth: 5
     },
     button: {
-        backgroundColor: 'deepskyblue',
+        backgroundColor: '#2980b9',
         borderRadius: 5,
         padding: 10
     },
@@ -67,8 +85,9 @@ module.exports = StyleSheet.create({
     },
     picker: {
         borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 3
+        borderColor: '#34495e',
+        borderRadius: 3,
+        height: 40
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -77,7 +96,7 @@ module.exports = StyleSheet.create({
     },
     card: {
         borderWidth: 1,
-        borderColor: 'grey',
+        borderColor: '#bdc3c7',
         borderRadius: 3,
         marginBottom: 5
     },
@@ -85,28 +104,31 @@ module.exports = StyleSheet.create({
         flexDirection: 'row',
         padding: 5,
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: '#2c3e50'
     },
     cardBody: {
         padding: 5,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: "#bdc3c7"
     },
     eventHeader: {
         fontWeight: 'bold',
-        color: 'deepskyblue',
+        color: '#ECF0F1',
         fontSize: 20
     },
     // text colors
     textWhite: {
-        color: 'white'
+        color: '#ECF0F1',
+        fontWeight: '700'
     },
     // margins
     mb5: { // the second character indicates direction. (b = bottom, t = top, etc.)
         marginBottom: 5
     },
     // background colors (always start with 'bg' and then the color name)
-    bgDeepSkyBlue: {
-        backgroundColor: 'deepskyblue'
+    bgGray: {
+        backgroundColor: '#2c3e50'
     },
     // widths
     w200: {

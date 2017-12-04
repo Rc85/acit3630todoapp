@@ -11,7 +11,7 @@ export default class TopBarComponent extends Component {
 
         return(
             <View style={styles.topBarChild}>
-                <Text style={{textAlignVertical: 'center', fontSize: 20, fontWeight: 'bold', color: '#FFFFFF'}}>{title}</Text>
+                <Text style={{textAlignVertical: 'center', fontSize: 20, fontWeight: 'bold', color: '#ECF0F1'}}>{title}</Text>
             </View>
         )
     }

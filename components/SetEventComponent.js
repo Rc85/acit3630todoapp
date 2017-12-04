@@ -51,10 +51,8 @@ export default class SetEventComponent extends Component {
     }
 
     componentWillReceiveProps(nextProps) { // refer to the same function in EventsComponent
-        console.log(nextProps);
         let {params} = nextProps.navigation.state;
         events = params.event;
-        console.log(events);
     }
 
     render() {
@@ -68,6 +66,7 @@ export default class SetEventComponent extends Component {
             contentContainerStyle={styles.container}
             scrollEnabled={false}
             enableOnAndroid={true}
+            keyboardShouldPersistTaps='always'
             extraScrollHeight={100} // adds extra space below focused TextInput
             >
                 <View style={styles.topBar}>
@@ -82,6 +81,7 @@ export default class SetEventComponent extends Component {
                         underlineColorAndroid='transparent'
                         style={styles.textInputFull}
                         maxLength={30}
+                        autoCapitalize='sentences'
                         onChangeText={(value) => this.setState({
                             eventName: value
                         })} />
@@ -120,76 +120,86 @@ export default class SetEventComponent extends Component {
                         })} />
                     </View>
 
-                    <View style={styles.mb5}>
-                        <Text style={styles.label}>Repeat:</Text>
-                        <View style={styles.picker}>
-                            <Picker
-                            ref={input => {this.repeatPicker = input}}
-                            selectedValue={this.state.repeat}
-                            onValueChange={(value) => this.setState({
-                                repeat: value
-                            })}>
-                                <Picker.Item label='None' value='none'/>
-                                <Picker.Item label='Minute' value='minute'/>
-                                <Picker.Item label='Daily' value='day'/>
-                                <Picker.Item label='Weekly' value='week'/>
-                                <Picker.Item label='Monthly' value='month'/>
-                                <Picker.Item label='Yearly' value='year'/>
-                            </Picker>
+                    <Text style={styles.label}>Repeat:</Text>
+                    <View style={[styles.mb5, {flexDirection: 'row', alignItems: 'center'}]}>
+                        <View style={{flex: 4, marginRight: 2}}>
+                            <View style={styles.picker}>
+                                <Picker
+                                style={{marginTop: -6}}
+                                ref={input => {this.repeatPicker = input}}
+                                selectedValue={this.state.repeat}
+                                onValueChange={(value) => this.setState({
+                                    repeat: value
+                                })}>
+                                    <Picker.Item label='None' value='none'/>
+                                    <Picker.Item label='Minute' value='minute'/>
+                                    <Picker.Item label='Daily' value='day'/>
+                                    <Picker.Item label='Weekly' value='week'/>
+                                    <Picker.Item label='Monthly' value='month'/>
+                                    <Picker.Item label='Yearly' value='year'/>
+                                </Picker>
+                            </View>
                         </View>
-                    </View>
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableHighlight
-                        style={styles.button}
-                        onPress={() => {
-                            if (this.state.eventName !== null) {
-                                this.saveEvent(); // save to local storage
-                                this.EventNameInput.clear();
-                                this.notesInput.clear();
+                        <View style={{flex: 1}}>
+                            <TouchableHighlight
+                            style={styles.button}
+                            onPress={() => {
+                                if (this.state.eventName !== null) {
+                                    this.saveEvent(); // save to local storage
+                                    this.EventNameInput.clear();
+                                    this.notesInput.clear();
 
-                                let date = new Date(this.state.datetime);
-                                let scheduleDate = new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate(), (date.getHours() - 8), date.getMinutes());
-                                let notificationOptions = {
-                                    title: this.state.eventName,
-                                    sound: true
-                                };
+                                    let date = new Date(this.state.datetime);
+                                    let scheduleDate = new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate(), (date.getHours() - 8), date.getMinutes());
+                                    let notificationOptions = {
+                                        title: this.state.eventName,
+                                        sound: true
+                                    };
 
-                                if (this.state.repeat === 'none') {
-                                    var scheduleOptions = {
-                                        time: scheduleDate
+                                    if (this.state.repeat === 'none') {
+                                        var scheduleOptions = {
+                                            time: scheduleDate
+                                        }
+                                    } else {
+                                        var scheduleOptions = {
+                                            time: scheduleDate,
+                                            repeat: this.state.repeat
+                                        }
                                     }
+
+                                    Notifications.scheduleLocalNotificationAsync(notificationOptions, scheduleOptions);
+
+                                    alert('Event saved successfully');
+                                    this.setState({ // sets the state back to default
+                                        eventName: this.state.eventName,
+                                        datetime: this.state.datetime,
+                                        repeat: this.state.repeat,
+                                        notes: this.state.notes
+                                    });
+
+                                    let viewEventsAction = NavigationActions.setParams({ // creates an action to dispatch
+                                        params: {event: events},
+                                        key: 'ViewEvents'
+                                    });
+
+                                    let calendarEventsAction = NavigationActions.setParams({
+                                        params: {event: events},
+                                        key: 'Calendar'
+                                    });
+
+                                    this.props.navigation.dispatch(viewEventsAction); // dispatch action to EventsComponent
+                                    this.props.navigation.dispatch(calendarEventsAction); // dispatch action to CalendarComponent
                                 } else {
-                                    var scheduleOptions = {
-                                        time: scheduleDate,
-                                        repeat: this.state.repeat
-                                    }
+                                    alert('Please enter an event name');
                                 }
-
-                                Notifications.scheduleLocalNotificationAsync(notificationOptions, scheduleOptions);
-                                console.log(Notifications._setInitialNotification);
-
-                                alert('Event saved successfully');
-                                this.setState({ // sets the state back to default
-                                    eventName: this.state.eventName,
-                                    datetime: this.state.datetime,
-                                    repeat: this.state.repeat,
-                                    notes: this.state.notes
-                                });
-                                console.log(this.state.datetime);
-
-                                let eventsAction = NavigationActions.setParams({ // creates an action to dispatch
-                                    params: {event: events},
-                                    key: 'ViewEvents'
-                                });
-
-                                this.props.navigation.dispatch(eventsAction); // dispatch action to EventsComponent
-                            } else {
-                                alert('Please enter an event name');
-                            }
-                        }}>
-                            <Text style={styles.textWhite}>Save</Text>
-                        </TouchableHighlight>
+                            }}>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Icon style={{marginRight: 2}} name='save' color='#fff'/>
+                                    <Text style={styles.textWhite}>Save</Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
             </KeyboardAwareScrollView>

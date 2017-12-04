@@ -30,8 +30,11 @@ const ToDoApp = TabNavigator({
     tabBarPosition: 'bottom',
     animationEnabled: true,
     tabBarOptions: {
-        activeTintColor: 'mediumblue',
-        style: styles.bgDeepSkyBlue
+        activeTintColor:'#ecf0f1',
+        style: styles.bgGray,
+        labelStyle: {
+            fontSize: 11
+        }
     },
     backBehavior: 'none'
 });

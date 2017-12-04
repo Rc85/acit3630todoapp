@@ -32,8 +32,9 @@ export default class EventsComponent extends Component {
     }
 
     async deleteAll() {
-        await AsyncStorage.removeItem('events'); // remove the 'events' string entirely
         events.length = 0; // remove all items in events array
+        let eventList = await JSON.stringify(events);
+        await AsyncStorage.setItem('events', eventList); // remove the 'events' string entirely
         this.setState({
             dataSource: events // set state to events array
         });
@@ -54,9 +55,10 @@ export default class EventsComponent extends Component {
     
     componentWillReceiveProps(nextProps) { // when this component receive new props from SetEventComponent.js
         let {params} = nextProps.navigation.state; // the {} allows us to access other objects inside nextProps.navigation.state
-        
+        events = params.event;
+
         this.setState({
-            dataSource: params.event
+            dataSource: events
         });
     }
 
@@ -82,7 +84,13 @@ export default class EventsComponent extends Component {
                                         key: 'SetEvent'
                                     });
 
+                                    let singleDeleteAction = NavigationActions.setParams({
+                                        params: {event: events},
+                                        key: 'Calendar'
+                                    });
+
                                     this.props.navigation.dispatch(setEventActions);
+                                    this.props.navigation.dispatch(singleDeleteAction);
                                 }}
                             ]
                         )
@@ -116,7 +124,7 @@ export default class EventsComponent extends Component {
                     <TopBarComponent navigation={this.props.navigation} title={title} />
                 </View>
 
-                <ScrollView style={styles.main}>
+                <ScrollView style={styles.eventsMain}>
                     <View style={styles.buttonContainer}>
                         <TouchableHighlight
                         style={styles.button}
@@ -129,17 +137,26 @@ export default class EventsComponent extends Component {
                                     {text: 'Yes', onPress: () => {
                                         this.deleteAll(); // delete all events
                                         alert('All events deleted');
-                                        let setEventActions = NavigationActions.setParams({ // create an action to send to SetEventComponent to updat the event list, so that when user goes an create another event, it's appended to the new list
+                                        let setEventActions = NavigationActions.setParams({ // create an action to send to SetEventComponent to update the event list, so that when user goes an create another event, it's appended to the new list
                                             params: {event: events},
                                             key: 'SetEvent'
                                         });
 
+                                        let deleteAllAction = NavigationActions.setParams({
+                                            params: {event: events},
+                                            key: 'Calendar'
+                                        });
+
                                         this.props.navigation.dispatch(setEventActions); // dispatch the action, this will trigger componentWillReceiveProps in SetEventComponent
+                                        this.props.navigation.dispatch(deleteAllAction);
                                     }}
                                 ]
                             )
                         }}>
-                            <Text style={styles.textWhite}>Delete All</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <Icon style={{marginRight: 2}} name='remove' color='#fff'/>
+                                <Text style={styles.textWhite}>Delete All</Text>
+                            </View>
                         </TouchableHighlight>
                     </View>
 

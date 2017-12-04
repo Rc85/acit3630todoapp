@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import TopBarComponent from './TopBarComponent.js';
 
 const styles = require('../assets/ToDoApp/styles.js');
-const title = 'Tasks';
+const title = 'My Tasks';
 var tasks = [];
 
 export default class CurrentTasksComponent extends Component {
@@ -19,7 +19,7 @@ export default class CurrentTasksComponent extends Component {
     }
 
     static navigationOptions = {
-        title: title
+        title: title   
     }
 
     addTask(task) {
@@ -60,7 +60,7 @@ export default class CurrentTasksComponent extends Component {
 
     render() {
         let eventItem = this.state.listDataSource.map((obj, i) => {
-            return <CheckboxField
+            return <CheckboxField 
             key={i}
             containerStyle={styles.checkbox}
             onSelect={() => {
@@ -69,7 +69,7 @@ export default class CurrentTasksComponent extends Component {
             label={obj}
             labelSide='right'
             labelStyle={styles.checkboxLabel}>
-                <Icon name="check" color="#fff" />
+                <Icon name="remove" color="red" />
             </CheckboxField>
         })
         return(
@@ -97,7 +97,10 @@ export default class CurrentTasksComponent extends Component {
                                 alert('Please enter a task');
                             }
                         }}>
-                            <Text style={styles.textWhite}>Add Task</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <Icon style={{marginRight: 2}} name='plus' color='#fff'/>
+                                <Text style={styles.textWhite}>Add Task</Text>
+                            </View>
                         </TouchableHighlight>
                     </View>
                 </View>
